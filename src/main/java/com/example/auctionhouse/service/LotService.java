@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +48,20 @@ public class LotService {
         return null;
     }
 
-    public List<Lot> findLotModelsByStatus(Pageable pageable,Status status) {
-        return lotRepository.findLotModelsByStatus(pageable,status).stream().map(mappingUtils::mapToLotDTO).collect(Collectors.toList());
+    public List<FullLot> getLotsForCSV() {
+        return lotRepository.findBy().stream().map(mappingUtils::mapToFullLotDTO)
+                .peek(e -> {
+                    BidModel lastBid = bidRepository.getLastBidderInfo(e.getId());
+                    if (lastBid != null) {
+                        e.setLastBid(mappingUtils.mapToBidDTO(lastBid));
+                    }
+                    e.setCurrentPrice(bidRepository.getCountBidByLotId(e.getId()) * e.getBidPrice() + e.getStartPrice());
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<Lot> findLotModelsByStatus(Pageable pageable, Status status) {
+        return lotRepository.findLotModelsByStatus(pageable, status).stream().map(mappingUtils::mapToLotDTO).collect(Collectors.toList());
     }
 
     public void startAuction(Long lotId) {
@@ -64,7 +77,7 @@ public class LotService {
     }
 
     public LotModel getLotModel(Long lotId) {
-       return lotRepository.findById(lotId).orElse(null);
+        return lotRepository.findById(lotId).orElse(null);
     }
 
 }

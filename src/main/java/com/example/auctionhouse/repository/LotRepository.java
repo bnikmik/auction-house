@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface LotRepository extends PagingAndSortingRepository<LotModel,Long> {
     List<LotModel> findLotModelsByStatus(Pageable pageable, Status status);
+    List<LotModel> findBy();
 }
