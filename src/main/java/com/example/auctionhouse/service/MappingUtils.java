@@ -30,6 +30,7 @@ public class MappingUtils {
 
     public Bid mapToBidDTO(BidModel bid) {
         Bid dto = new Bid();
+        dto.setId(bid.getId());
         dto.setBidDate(bid.getBidDate());
         dto.setBidderName(bid.getBidderName());
         return dto;

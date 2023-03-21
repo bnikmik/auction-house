@@ -1,5 +1,6 @@
 package com.example.auctionhouse.dto;
 
+import com.example.auctionhouse.model.BidModel;
 import com.example.auctionhouse.model.Status;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ public class FullLot {
     private String description;
     private Integer startPrice;
     private Integer bidPrice;
-    private Integer currentPrice;
+    private int currentPrice;
     private Bid lastBid;
 }
 

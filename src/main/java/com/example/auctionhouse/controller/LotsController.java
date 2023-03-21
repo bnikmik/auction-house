@@ -1,6 +1,7 @@
 package com.example.auctionhouse.controller;
 
 import com.example.auctionhouse.dto.*;
+import com.example.auctionhouse.model.LotModel;
 import com.example.auctionhouse.model.Status;
 import com.example.auctionhouse.service.BidService;
 import com.example.auctionhouse.service.LotService;
@@ -30,12 +31,11 @@ public class LotsController {
         return ResponseEntity.ok(lotService.createLot(createLot));
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<FullLot> findFullLot(@PathVariable Long id) {
+    public ResponseEntity<?> findFullLot(@PathVariable Long id) {
         FullLot fullLot = lotService.findFullLot(id);
         if (fullLot == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
         return ResponseEntity.ok(fullLot);
     }
@@ -74,16 +74,23 @@ public class LotsController {
     @JsonView(View.Internal.class)
     @PostMapping("/{id}/bid")
     public ResponseEntity<?> createBid(@PathVariable Long id, @RequestBody Bid bid) {
-        FullLot fullLot = lotService.findFullLot(id);
-        if (fullLot == null) {
+        LotModel lot = lotService.getLotModel(id);
+        if (lot == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
         }
-        if (fullLot.getStatus().equals(Status.CREATED) ||
-                fullLot.getStatus().equals(Status.STOPPED)) {
+        if (lot.getStatus().equals(Status.CREATED) ||
+                lot.getStatus().equals(Status.STOPPED)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Лот в неверном статусе");
         }
         return ResponseEntity.ok(bidService.createBid(id, bid));
     }
 
-//    @GetMapping("/{id}/first")
+    @GetMapping("/{id}/first")
+    public ResponseEntity<?> getFirstBidderInfo(@PathVariable Long id) {
+        FullLot fullLot = lotService.findFullLot(id);
+        if (fullLot == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Лот не найден");
+        }
+        return ResponseEntity.ok(bidService.getFirstBidderInfo(id));
+    }
 }

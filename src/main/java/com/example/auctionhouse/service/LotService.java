@@ -3,8 +3,10 @@ package com.example.auctionhouse.service;
 import com.example.auctionhouse.dto.CreateLot;
 import com.example.auctionhouse.dto.FullLot;
 import com.example.auctionhouse.dto.Lot;
+import com.example.auctionhouse.model.BidModel;
 import com.example.auctionhouse.model.LotModel;
 import com.example.auctionhouse.model.Status;
+import com.example.auctionhouse.repository.BidRepository;
 import com.example.auctionhouse.repository.LotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,13 @@ import java.util.stream.Collectors;
 public class LotService {
     private final MappingUtils mappingUtils;
     private final LotRepository lotRepository;
+    private final BidRepository bidRepository;
 
     @Autowired
-    public LotService(MappingUtils mappingUtils, LotRepository lotRepository) {
+    public LotService(MappingUtils mappingUtils, LotRepository lotRepository, BidRepository bidRepository) {
         this.mappingUtils = mappingUtils;
         this.lotRepository = lotRepository;
+        this.bidRepository = bidRepository;
     }
 
     public Lot createLot(CreateLot lot) {
@@ -34,7 +38,11 @@ public class LotService {
     public FullLot findFullLot(Long lotId) {
         LotModel lotModel = lotRepository.findById(lotId).orElse(null);
         if (lotModel != null) {
-            return mappingUtils.mapToFullLotDTO(lotModel);
+            BidModel lastBid = bidRepository.getLastBidderInfo(lotId);
+            FullLot fullLot = mappingUtils.mapToFullLotDTO(lotModel);
+            fullLot.setLastBid(mappingUtils.mapToBidDTO(lastBid));
+            fullLot.setCurrentPrice(bidRepository.getCountBidByLotId(lotId) * fullLot.getBidPrice() + fullLot.getStartPrice());
+            return fullLot;
         }
         return null;
     }
@@ -55,6 +63,8 @@ public class LotService {
         lotRepository.save(lotModel);
     }
 
-
+    public LotModel getLotModel(Long lotId) {
+       return lotRepository.findById(lotId).orElse(null);
+    }
 
 }
