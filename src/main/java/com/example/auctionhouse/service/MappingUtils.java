@@ -1,6 +1,9 @@
 package com.example.auctionhouse.service;
 
-import com.example.auctionhouse.dto.*;
+import com.example.auctionhouse.dto.Bid;
+import com.example.auctionhouse.dto.CreateLot;
+import com.example.auctionhouse.dto.FullLot;
+import com.example.auctionhouse.dto.Lot;
 import com.example.auctionhouse.model.BidModel;
 import com.example.auctionhouse.model.LotModel;
 import org.springframework.stereotype.Service;
@@ -43,8 +46,6 @@ public class MappingUtils {
         dto.setBidPrice(lotModel.getBidPrice());
         return dto;
     }
-
-
 
     public LotModel mapFromCreateLotDTO(CreateLot dto) {
         LotModel lotModel = new LotModel();

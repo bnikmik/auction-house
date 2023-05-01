@@ -1,7 +1,10 @@
 package com.example.auctionhouse.controller;
 
 import com.example.auctionhouse.component.CsvFileGenerator;
-import com.example.auctionhouse.dto.*;
+import com.example.auctionhouse.dto.Bid;
+import com.example.auctionhouse.dto.CreateLot;
+import com.example.auctionhouse.dto.FullLot;
+import com.example.auctionhouse.dto.Lot;
 import com.example.auctionhouse.model.LotModel;
 import com.example.auctionhouse.model.Status;
 import com.example.auctionhouse.service.BidService;
@@ -9,11 +12,10 @@ import com.example.auctionhouse.service.LotService;
 import com.example.auctionhouse.view.View;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -52,7 +54,6 @@ public class LotsController {
         return ResponseEntity.ok(lotService.findLotModelsByStatus(pageable, status));
     }
 
-    @JsonView(View.Internal.class)
     @GetMapping("/export")
     public void exportLotsToCsv(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");

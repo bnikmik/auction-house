@@ -1,6 +1,7 @@
 package com.example.auctionhouse.component;
 
 import com.example.auctionhouse.dto.FullLot;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
+@Slf4j
 @Component
 public class CsvFileGenerator {
     public void exportLotsToCsv(List<FullLot> fullLots, Writer writer) {
@@ -19,11 +21,11 @@ public class CsvFileGenerator {
                     printer.printRecord(fullLot.getId(), fullLot.getTitle(), fullLot.getStatus(),
                             fullLot.getLastBid().getBidderName(), fullLot.getCurrentPrice());
                 } else {
-                    printer.printRecord(fullLot.getId(), fullLot.getTitle(), fullLot.getStatus(),"Lots not found", fullLot.getCurrentPrice());
+                    printer.printRecord(fullLot.getId(), fullLot.getTitle(), fullLot.getStatus(), "Lots not found", fullLot.getCurrentPrice());
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 }

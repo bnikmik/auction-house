@@ -9,9 +9,8 @@ import com.example.auctionhouse.model.Status;
 import com.example.auctionhouse.repository.BidRepository;
 import com.example.auctionhouse.repository.LotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +48,7 @@ public class LotService {
     }
 
     public List<FullLot> getLotsForCSV() {
-        return lotRepository.findBy().stream().map(mappingUtils::mapToFullLotDTO)
+        return lotRepository.findAll().stream().map(mappingUtils::mapToFullLotDTO)
                 .peek(e -> {
                     BidModel lastBid = bidRepository.getLastBidderInfo(e.getId());
                     if (lastBid != null) {

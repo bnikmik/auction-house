@@ -1,6 +1,5 @@
 package com.example.auctionhouse.dto;
 
-import com.example.auctionhouse.model.BidModel;
 import com.example.auctionhouse.model.Status;
 import com.example.auctionhouse.view.View;
 import com.fasterxml.jackson.annotation.JsonView;

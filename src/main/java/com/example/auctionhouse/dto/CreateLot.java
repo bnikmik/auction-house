@@ -1,6 +1,7 @@
 package com.example.auctionhouse.dto;
 
 import lombok.Data;
+
 @Data
 public class CreateLot {
     private String title;
